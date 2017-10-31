@@ -7,5 +7,13 @@ namespace MvcModels.Models {
     public class AddressSummary {
         public string City { get; set; }
         public string Country { get; set; }
+
+        public AddressSummary() { }
+
+        public AddressSummary(Address address)
+        {
+            City = address.City;
+            Country = address.Country;
+        }
     }
 }

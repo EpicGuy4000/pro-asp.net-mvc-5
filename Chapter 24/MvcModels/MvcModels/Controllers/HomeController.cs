@@ -1,23 +1,35 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using MvcModels.Models;
+using MvcModels.Infrastructure;
 
 namespace MvcModels.Controllers {
     public class HomeController : Controller {
-        private Person[] personData = {
-            new Person {PersonId = 1, FirstName = "Adam", LastName = "Freeman", 
-                Role = Role.Admin},
-            new Person {PersonId = 2, FirstName = "Jacqui", LastName = "Griffyth", 
-                Role = Role.User},
-            new Person {PersonId = 3, FirstName = "John", LastName = "Smith", 
-                Role = Role.User},
-            new Person {PersonId = 4, FirstName = "Anne", LastName = "Jones", 
-                Role = Role.Guest}
+        public static Dictionary<int, Person> Persons = new Dictionary<int, Person>(){
+            {
+                1,
+                new Person {PersonId = 1, FirstName = "Adam", LastName = "Freeman",
+                Role = Role.Admin}
+            },
+            {
+                2,
+                new Person {PersonId = 2, FirstName = "Jacqui", LastName = "Griffyth",
+                Role = Role.User}
+            },
+            {
+                3,
+                new Person {PersonId = 3, FirstName = "John", LastName = "Smith",
+                Role = Role.User}
+            },
+            {
+                4,
+                new Person {PersonId = 4, FirstName = "Anne", LastName = "Jones",
+                    Role = Role.Guest}
+            },
         };
 
         public ActionResult Index(int id = 1) {
-            Person dataItem = personData.Where(p => p.PersonId == id).First();
+            Person dataItem = Persons[id];
             return View(dataItem);
         }
 
@@ -35,6 +47,31 @@ namespace MvcModels.Controllers {
             return View(summary);
         }
 
+        public ActionResult UpdateAddress(int id)
+        {
+            Person dataItem = Persons[id];
+            return View(new AddressSummary(dataItem.HomeAddress ?? new Address()));
+        }
+
+        [HttpPost]
+        public ActionResult UpdateAddress(int id, [ModelBinder(typeof(DefaultModelBinder))]AddressSummary address)
+        {
+            Person dataItem = Persons[id];
+            if (dataItem.HomeAddress == null)
+            {
+                dataItem.HomeAddress = new Address();
+            }
+            dataItem.HomeAddress.City = address.City;
+
+            dataItem.HomeAddress.Country = address.Country;
+            return RedirectToAction("Index", new { id = id });
+        }
+
+        public ActionResult ViewPerson([ModelBinder(typeof(PersonDatabaseBinder))]Person person)
+        {
+            return View("Index", person);
+        }
+
         public ActionResult Names(IList<string> names) {
             names = names ?? new List<string>();
             return View(names);
@@ -45,11 +82,5 @@ namespace MvcModels.Controllers {
             UpdateModel(addresses);
             return View(addresses);
         }
-
-
-
-
-
-
     }
 }

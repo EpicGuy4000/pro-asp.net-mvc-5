@@ -1,0 +1,14 @@
+﻿@using MvcModels.Models
+@model AddressSummary
+@{
+    ViewBag.Title = "Update Address";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<legend>Address</legend>
+@using (Html.BeginForm(null, null, new { City = "Novi Sad" }, FormMethod.Post)) {
+    <fieldset>
+        <div><label>City:</label>@Html.EditorFor(m => m.City)</div>
+        <div><label>Country:</label>@Html.EditorFor(m => m.Country)</div>
+    </fieldset>
+    <button type="submit">Submit</button>
+}

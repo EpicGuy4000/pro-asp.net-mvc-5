@@ -18,6 +18,8 @@ namespace MvcModels {
             //ValueProviderFactories.Factories.Insert(0, 
             //    new CustomValueProviderFactory());
 
+            ValueProviderFactories.Factories.Insert(0, new XmlValueProviderFactory());
+
             ModelBinders.Binders.Add(typeof(AddressSummary), new AddressSummaryBinder());
         }
     }

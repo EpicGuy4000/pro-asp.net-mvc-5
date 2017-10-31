@@ -16,9 +16,14 @@ namespace MvcModels.Infrastructure {
 
         private string GetValue(ModelBindingContext context, string name) {
             name = (context.ModelName == "" ? "" : context.ModelName + ".") + name;
+            
 
             ValueProviderResult result = context.ValueProvider.GetValue(name);
-            if (result == null || result.AttemptedValue == "") {
+            if (result == null)
+            {
+                return null;
+            }
+            else if (result.AttemptedValue == "") {
                 return "<Not Specified>";
             } else {
                 return (string)result.AttemptedValue;
